@@ -23,6 +23,7 @@ public class PlayerController : NetworkBehaviour
     private ResourceSpawner m_resourceSpawner;
     private NetworkVariable<ulong> m_heldNetworkObjectId = new(ulong.MaxValue);
     private NetworkVariable<ObjectType> m_heldObjectType = new(ObjectType.None);
+    public bool isOperatingTank = false;
 
     private void Awake()
     {
@@ -35,15 +36,38 @@ public class PlayerController : NetworkBehaviour
         m_playerInput.OnInteractPressed += HandleActionPressed;
     }
 
-    private void HandlePickUpPressed()
+    
+private void HandlePickUpPressed()
+{
+    if (isOperatingTank)
+    return;
+    
+    if (!IsOwner || isOperatingTank)
+        return;
+
+    if (m_isInteracting || m_isChopping)
+        return;
+
+    // Check whether the player is near the Abrams.
+    TankCrewManager tank = FindAnyObjectByType<TankCrewManager>();
+
+    if (tank != null && tank.GunnerSeatAvailable &&
+        Vector3.Distance(transform.position,
+                         tank.transform.position) < 5f)
     {
-        if (m_isInteracting || m_isChopping)
-            return;
-        if(m_interactionDetector.ClosestInteractable == null)
-            return;
-        m_animator.SetBool("Interact", true);
-        m_isInteracting = true;
+        tank.RequestGunnerSeatRpc();
+        Debug.Log("Requested Abrams gunner seat!");
+        return;
     }
+
+    // Keep the tutorial's normal pickup behavior.
+    if (m_interactionDetector.ClosestInteractable == null)
+        return;
+
+    m_animator.SetBool("Interact", true);
+    m_isInteracting = true;
+}
+
 
     private void OnDisable()
     {
@@ -239,7 +263,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if(IsOwner == false)
+        if(!IsOwner || isOperatingTank)
         {
             return;
         }
