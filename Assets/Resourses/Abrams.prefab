@@ -352,6 +352,7 @@ GameObject:
   - component: {fileID: 5829054255611953250}
   - component: {fileID: 8045005298217424936}
   - component: {fileID: 4602273751462797790}
+  - component: {fileID: 1973318882808280659}
   m_Layer: 0
   m_Name: Abrams
   m_TagString: Untagged
@@ -459,8 +460,8 @@ MonoBehaviour:
   heatRounds: 15
   controlsEnabled: 0
   mouseSensitivity: 0.5
-  sabotPrefab: {fileID: 0}
-  heatPrefab: {fileID: 0}
+  sabotPrefab: {fileID: -48277585803267312, guid: ab3028b7cd9e5b04d85c5403e0e39445, type: 3}
+  heatPrefab: {fileID: 2343102708705794436, guid: 28b40ddbc48f8204ba62c2de887912b9, type: 3}
   sabotSpeed: 1500
   heatSpeed: 900
   lowZoomFOV: 18.6
@@ -478,8 +479,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1131847028
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 16214915
+  InScenePlacedSourceGlobalObjectIdHash: 2216474085
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -526,8 +527,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TankTurretNetwork
   ShowTopMostFoldoutHeaderGroup: 1
-  crew: {fileID: 0}
-  tankTurret: {fileID: 0}
+  crew: {fileID: 8045005298217424936}
+  tankTurret: {fileID: 3411853869856799507}
+--- !u!114 &1973318882808280659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3694544374777939498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d206e22e36f4d6459f4d1163da4c273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TankWeaponNetwork
+  ShowTopMostFoldoutHeaderGroup: 1
+  crew: {fileID: 8045005298217424936}
+  gunner: {fileID: 2576590132663703070}
+  sabotAmmo:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  heatAmmo:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  reloadRemaining:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
 --- !u!1 &4084667638060115113
 GameObject:
   m_ObjectHideFlags: 0
@@ -1284,7 +1315,7 @@ GameObject:
   - component: {fileID: 430518499054646472}
   - component: {fileID: 6458973170488603146}
   m_Layer: 0
-  m_Name: Turret
+  m_Name: TankTurret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

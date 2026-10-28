@@ -10,8 +10,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.30",
-      "depth": 1,
+      "version": "1.8.29",
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
@@ -195,7 +195,7 @@
       }
     },
     "com.unity.searcher": {
-      "version": "4.9.5",
+      "version": "4.9.4",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
@@ -295,11 +295,11 @@
       "source": "builtin",
       "dependencies": {
         "com.unity.render-pipelines.core": "17.3.0",
-        "com.unity.searcher": "4.9.5"
+        "com.unity.searcher": "4.9.3"
       }
     },
     "com.unity.splines": {
-      "version": "2.9.1",
+      "version": "2.8.2",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -320,7 +320,7 @@
       }
     },
     "com.unity.test-framework.performance": {
-      "version": "3.5.0",
+      "version": "3.2.0",
       "depth": 2,
       "source": "registry",
       "dependencies": {
