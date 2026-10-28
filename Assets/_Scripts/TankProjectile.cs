@@ -45,7 +45,7 @@ public class TankProjectile : MonoBehaviour
 
         float distance = displacement.magnitude;
 
-        // Only the server's projectile registers hits.
+        // Visual rounds move but do not register damage.
         if (!visualOnly && distance > 0f)
         {
             RaycastHit[] hits = Physics.RaycastAll(
@@ -63,20 +63,28 @@ public class TankProjectile : MonoBehaviour
 
             foreach (RaycastHit hit in hits)
             {
-                // Ignore our own tank.
                 if (shooterRoot != null &&
                     hit.collider.transform.IsChildOf(shooterRoot))
                     continue;
 
                 TankHitbox hitbox =
-                    hit.collider.GetComponent<TankHitbox>();
+    hit.collider.GetComponent<TankHitbox>();
 
-                if (hitbox == null)
-                    hitbox =
-                        hit.collider.GetComponentInParent<TankHitbox>();
+if (hitbox == null)
+    hitbox =
+        hit.collider.GetComponentInParent<TankHitbox>();
 
-                if (hitbox != null)
-                    hitbox.ReceiveHit(ammo);
+if (hitbox != null)
+{
+    Debug.Log($"HITBOX FOUND: {hitbox.name}");
+    hitbox.ReceiveHit(ammo);
+}
+else
+{
+    Debug.LogWarning(
+        $"NO HITBOX on {hit.collider.name}"
+    );
+}
 
                 if (impactEffect != null)
                 {
@@ -91,7 +99,6 @@ public class TankProjectile : MonoBehaviour
                 }
 
                 Debug.Log($"{ammo} impact: {hit.collider.name}");
-
                 Destroy(gameObject);
                 return;
             }

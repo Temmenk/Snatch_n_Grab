@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class TankGunner : MonoBehaviour
 {
+    public TankWeaponNetwork weaponNetwork;
     public enum AmmoType { SABOT, HEAT }
     public TankTurret tankTurret;
     public Camera gunnerCamera;
@@ -151,25 +152,13 @@ public class TankGunner : MonoBehaviour
     }
 
     void Fire()
+{
+    if (weaponNetwork == null)
     {
-        if (Time.time < nextFireTime || muzzle == null) return;
-        if (selectedAmmo == AmmoType.SABOT && sabotRounds <= 0) return;
-        if (selectedAmmo == AmmoType.HEAT && heatRounds <= 0) return;
-
-        TankProjectile prefab = selectedAmmo == AmmoType.SABOT ? sabotPrefab : heatPrefab;
-        if (prefab == null)
-        {
-            Debug.LogWarning($"Assign the {selectedAmmo} projectile prefab in TankGunner!");
-            return;
-        }
-
-        if (selectedAmmo == AmmoType.SABOT) sabotRounds--;
-        else heatRounds--;
-        nextFireTime = Time.time + reloadSeconds;
-
-        float speed = selectedAmmo == AmmoType.SABOT ? sabotSpeed : heatSpeed;
-        TankProjectile projectile = Instantiate(prefab, muzzle.position, muzzle.rotation);
-        projectile.Launch(muzzle.forward, speed, selectedAmmo, transform.root, targetLayers);
-        Debug.Log($"{selectedAmmo} launched at {speed} m/s");
+        Debug.LogWarning("TankWeaponNetwork is not assigned!");
+        return;
     }
+
+    weaponNetwork.RequestFire(selectedAmmo);
+}
 }

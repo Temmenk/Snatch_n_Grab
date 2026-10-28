@@ -1020,14 +1020,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2576590132663703070, guid: cf93f631200804d4f87d9c40ff858173, type: 3}
-      propertyPath: heatSpeed
-      value: 800
-      objectReference: {fileID: 0}
-    - target: {fileID: 2576590132663703070, guid: cf93f631200804d4f87d9c40ff858173, type: 3}
-      propertyPath: sabotSpeed
-      value: 1500
-      objectReference: {fileID: 0}
     - target: {fileID: 3694544374777939498, guid: cf93f631200804d4f87d9c40ff858173, type: 3}
       propertyPath: m_Name
       value: Abrams
@@ -1083,7 +1075,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3694544374777939498, guid: cf93f631200804d4f87d9c40ff858173, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2142904879}
   m_SourcePrefab: {fileID: 100100000, guid: cf93f631200804d4f87d9c40ff858173, type: 3}
 --- !u!1 &410087039
 GameObject:
@@ -1425,7 +1420,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 535407650}
-    PlayerPrefab: {fileID: 0}
+    PlayerPrefab: {fileID: 1855797244298458106, guid: 24e075b32f01fa74eae0fe6c15ccb589, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 358b08ad235c3fc4cbe137d993d2d6c4, type: 2}
@@ -1854,6 +1849,79 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &880537945
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 81909253213811379, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_InScenePlaced
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 81909253213811379, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3382470950
+      objectReference: {fileID: 0}
+    - target: {fileID: 81909253213811379, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 81909253213811379, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2159644280
+      objectReference: {fileID: 0}
+    - target: {fileID: 1916485779902170756, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_Name
+      value: EnemyTank
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 13.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0000015497208
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 51.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.02973041
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.999558
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -183.407
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421025015694432655, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9817a7be29d970e448e1a29294bf6a4c, type: 3}
 --- !u!1 &987404082
 GameObject:
   m_ObjectHideFlags: 0
@@ -3067,6 +3135,48 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6211565343829425787, guid: 28ea3d07c5fa049479b7b6f4f3acc6c8, type: 3}
   m_PrefabInstance: {fileID: 2113069968}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2142904869 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3694544374777939498, guid: cf93f631200804d4f87d9c40ff858173, type: 3}
+  m_PrefabInstance: {fileID: 371908003}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2142904872 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8045005298217424936, guid: cf93f631200804d4f87d9c40ff858173, type: 3}
+  m_PrefabInstance: {fileID: 371908003}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2142904869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6236c6c0bde1cb24badab99314b3504e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TankCrewManager
+--- !u!114 &2142904876 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3292453635538156673, guid: cf93f631200804d4f87d9c40ff858173, type: 3}
+  m_PrefabInstance: {fileID: 371908003}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2142904869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 965a5e90d06755e4ab619a2373fcd954, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CommanderCITV
+--- !u!114 &2142904879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2142904869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac264dc45ef75746b56373eae0811a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CommanderCITVNetwork
+  ShowTopMostFoldoutHeaderGroup: 1
+  crew: {fileID: 2142904872}
+  commander: {fileID: 2142904876}
 --- !u!1001 &2488478570262511238
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3251,3 +3361,4 @@ SceneRoots:
   - {fileID: 2030518210}
   - {fileID: 152232925}
   - {fileID: 371908003}
+  - {fileID: 880537945}

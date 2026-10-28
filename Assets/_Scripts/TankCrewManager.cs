@@ -9,7 +9,17 @@ public class TankCrewManager : NetworkBehaviour
     public Transform gunnerSeat;
     public TankGunner tankGunner;
 
+    [Header("Commander Station")]
+    public Transform commanderSeat;
+    public CommanderCITV commanderCITV;
+
     public NetworkVariable<ulong> gunnerClientId = new(
+        ulong.MaxValue,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
+    public NetworkVariable<ulong> commanderClientId = new(
         ulong.MaxValue,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
@@ -18,80 +28,134 @@ public class TankCrewManager : NetworkBehaviour
     public bool GunnerSeatAvailable =>
         gunnerClientId.Value == ulong.MaxValue;
 
+    public bool CommanderSeatAvailable =>
+        commanderClientId.Value == ulong.MaxValue;
+
+    private enum CrewRole
+    {
+        None,
+        Gunner,
+        Commander
+    }
+
+    private CrewRole localRole = CrewRole.None;
+
     private Camera worldCamera;
+    private AudioListener worldAudio;
     private CameraFollow cameraFollow;
     private PlayerController localPlayer;
-    private bool operatingLocally;
 
     public override void OnNetworkSpawn()
     {
-        gunnerClientId.OnValueChanged += OnGunnerChanged;
-        OnGunnerChanged(ulong.MaxValue, gunnerClientId.Value);
+        gunnerClientId.OnValueChanged += OnSeatChanged;
+        commanderClientId.OnValueChanged += OnSeatChanged;
+
+        RefreshLocalSeat();
     }
 
     public override void OnNetworkDespawn()
     {
-        if (operatingLocally)
-            ExitLocalGunner();
+        gunnerClientId.OnValueChanged -= OnSeatChanged;
+        commanderClientId.OnValueChanged -= OnSeatChanged;
 
-        gunnerClientId.OnValueChanged -= OnGunnerChanged;
+        if (localRole != CrewRole.None)
+            ExitLocalStation();
+    }
+
+    private bool PlayerNearSeat(ulong clientId, Transform seat)
+    {
+        if (seat == null)
+            return false;
+
+        if (!NetworkManager.ConnectedClients.TryGetValue(
+            clientId, out var client))
+            return false;
+
+        if (client.PlayerObject == null)
+            return false;
+
+        return Vector3.Distance(
+            client.PlayerObject.transform.position,
+            seat.position) <= 10f;
     }
 
     [Rpc(SendTo.Server)]
     public void RequestGunnerSeatRpc(RpcParams rpcParams = default)
     {
-        ulong clientId = rpcParams.Receive.SenderClientId;
+        ulong id = rpcParams.Receive.SenderClientId;
 
-        if (!GunnerSeatAvailable)
+        if (!GunnerSeatAvailable ||
+            commanderClientId.Value == id ||
+            !PlayerNearSeat(id, gunnerSeat))
             return;
 
-        // Check that the player is actually near the tank.
-        if (!NetworkManager.ConnectedClients.TryGetValue(
-            clientId, out var client))
+        gunnerClientId.Value = id;
+        Debug.Log($"Client {id} entered gunner seat.");
+    }
+
+    [Rpc(SendTo.Server)]
+    public void RequestCommanderSeatRpc(RpcParams rpcParams = default)
+    {
+        ulong id = rpcParams.Receive.SenderClientId;
+
+        if (!CommanderSeatAvailable ||
+            gunnerClientId.Value == id ||
+            !PlayerNearSeat(id, commanderSeat))
             return;
 
-        if (client.PlayerObject == null || gunnerSeat == null)
-            return;
-
-        if (Vector3.Distance(
-            client.PlayerObject.transform.position,
-            gunnerSeat.position) > 10f)
-            return;
-
-        gunnerClientId.Value = clientId;
-        Debug.Log($"Client {clientId} entered gunner seat.");
+        commanderClientId.Value = id;
+        Debug.Log($"Client {id} entered commander seat.");
     }
 
     [Rpc(SendTo.Server)]
     public void LeaveGunnerSeatRpc(RpcParams rpcParams = default)
     {
-        ulong clientId = rpcParams.Receive.SenderClientId;
+        ulong id = rpcParams.Receive.SenderClientId;
 
-        if (gunnerClientId.Value != clientId)
-            return;
-
-        gunnerClientId.Value = ulong.MaxValue;
-        Debug.Log($"Client {clientId} left gunner seat.");
+        if (gunnerClientId.Value == id)
+            gunnerClientId.Value = ulong.MaxValue;
     }
 
-    private void OnGunnerChanged(ulong previous, ulong current)
+    [Rpc(SendTo.Server)]
+    public void LeaveCommanderSeatRpc(RpcParams rpcParams = default)
+    {
+        ulong id = rpcParams.Receive.SenderClientId;
+
+        if (commanderClientId.Value == id)
+            commanderClientId.Value = ulong.MaxValue;
+    }
+
+    private void OnSeatChanged(ulong previous, ulong current)
+    {
+        RefreshLocalSeat();
+    }
+
+    private void RefreshLocalSeat()
     {
         if (NetworkManager == null || !NetworkManager.IsListening)
             return;
 
-        bool isMySeat = current == NetworkManager.LocalClientId;
+        ulong myId = NetworkManager.LocalClientId;
 
-        if (isMySeat && !operatingLocally)
-            EnterLocalGunner();
-        else if (!isMySeat && operatingLocally)
-            ExitLocalGunner();
-    }
+        CrewRole newRole = CrewRole.None;
 
-    private void EnterLocalGunner()
-    {
-        if (tankGunner == null || tankGunner.gunnerCamera == null)
+        if (gunnerClientId.Value == myId)
+            newRole = CrewRole.Gunner;
+        else if (commanderClientId.Value == myId)
+            newRole = CrewRole.Commander;
+
+        if (newRole == localRole)
             return;
 
+        if (localRole != CrewRole.None)
+            ExitLocalStation();
+
+        if (newRole != CrewRole.None)
+            EnterLocalStation(newRole);
+    }
+
+    private void EnterLocalStation(CrewRole role)
+    {
         if (NetworkManager.LocalClient == null ||
             NetworkManager.LocalClient.PlayerObject == null)
             return;
@@ -102,8 +166,19 @@ public class TankCrewManager : NetworkBehaviour
         if (localPlayer == null)
             return;
 
+        Camera stationCamera = GetStationCamera(role);
+
+        if (stationCamera == null)
+        {
+            Debug.LogWarning("Crew station camera not assigned!");
+            return;
+        }
+
         worldCamera = Camera.main;
         cameraFollow = localPlayer.GetComponent<CameraFollow>();
+
+        if (worldCamera != null)
+            worldAudio = worldCamera.GetComponent<AudioListener>();
 
         localPlayer.isOperatingTank = true;
 
@@ -113,28 +188,75 @@ public class TankCrewManager : NetworkBehaviour
         if (worldCamera != null)
             worldCamera.enabled = false;
 
-        tankGunner.gunnerCamera.enabled = true;
-        tankGunner.controlsEnabled = true;
+        if (worldAudio != null)
+            worldAudio.enabled = false;
+
+        stationCamera.enabled = true;
+
+        AudioListener stationAudio =
+            stationCamera.GetComponent<AudioListener>();
+
+        if (stationAudio != null)
+            stationAudio.enabled = true;
+
+        if (role == CrewRole.Gunner && tankGunner != null)
+            tankGunner.controlsEnabled = true;
+
+        if (role == CrewRole.Commander && commanderCITV != null)
+        {
+            commanderCITV.controlsEnabled = true;
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        operatingLocally = true;
-        Debug.Log("Gunner camera activated.");
+        localRole = role;
+
+        Debug.Log($"Entered {role} station.");
     }
 
-    private void ExitLocalGunner()
+    private Camera GetStationCamera(CrewRole role)
     {
-        if (tankGunner != null)
-        {
+        if (role == CrewRole.Gunner)
+            return tankGunner != null
+                ? tankGunner.gunnerCamera : null;
+
+        if (role == CrewRole.Commander)
+            return commanderCITV != null
+                ? commanderCITV.citvCamera : null;
+
+        return null;
+    }
+
+    private void ExitLocalStation()
+    {
+        Camera stationCamera = GetStationCamera(localRole);
+
+        if (localRole == CrewRole.Gunner && tankGunner != null)
             tankGunner.controlsEnabled = false;
 
-            if (tankGunner.gunnerCamera != null)
-                tankGunner.gunnerCamera.enabled = false;
+        if (localRole == CrewRole.Commander && commanderCITV != null)
+            commanderCITV.controlsEnabled = false;
+
+        if (stationCamera != null)
+        {
+            stationCamera.enabled = false;
+
+            AudioListener listener =
+                stationCamera.GetComponent<AudioListener>();
+
+            if (listener != null)
+                listener.enabled = false;
         }
 
         if (worldCamera != null)
             worldCamera.enabled = true;
+
+        if (worldAudio != null)
+            worldAudio.enabled = true;
 
         if (cameraFollow != null)
             cameraFollow.enabled = true;
@@ -145,16 +267,21 @@ public class TankCrewManager : NetworkBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        operatingLocally = false;
-        Debug.Log("Exited gunner station.");
+        localRole = CrewRole.None;
     }
 
     private void Update()
     {
-        if (!operatingLocally || Keyboard.current == null)
+        if (localRole == CrewRole.None ||
+            Keyboard.current == null)
             return;
 
-        if (Keyboard.current.fKey.wasPressedThisFrame)
+        if (!Keyboard.current.fKey.wasPressedThisFrame)
+            return;
+
+        if (localRole == CrewRole.Gunner)
             LeaveGunnerSeatRpc();
+        else if (localRole == CrewRole.Commander)
+            LeaveCommanderSeatRpc();
     }
 }

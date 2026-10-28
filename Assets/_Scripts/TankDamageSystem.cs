@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
 // Attach to the EnemyTank root. Existing TankHitbox and TankSpawner scripts work unchanged.
-public class TankDamageSystem : MonoBehaviour
+public class TankDamageSystem : NetworkBehaviour
 {
     public enum VehicleType { MainBattleTank, APC }
     public enum Component { Hull, LeftTrack, RightTrack, Engine, Turret, MainGun }
@@ -35,10 +36,48 @@ public class TankDamageSystem : MonoBehaviour
     public bool canMove => !destroyed && !leftTrackDisabled && !rightTrackDisabled && !engineDisabled;
     public bool canFire => !destroyed && !turretDisabled && !gunDisabled;
 
+    public NetworkVariable<bool> netDestroyed = new();
+    public NetworkVariable<bool> netLeftTrackDisabled = new();
+    public NetworkVariable<bool> netRightTrackDisabled = new();
+    public NetworkVariable<bool> netEngineDisabled = new();
+    public NetworkVariable<bool> netTurretDisabled = new();
+    public NetworkVariable<bool> netGunDisabled = new();
+
     // Game rules, not a physical armor-penetration simulation. No hit points.
-    public void ApplyHit(Component part, TankGunner.AmmoType ammo)
+    
+private void LateUpdate()
     {
+        if (!IsSpawned)
+            return;
+
+        if (IsServer)
+        {
+            netDestroyed.Value = destroyed;
+            netLeftTrackDisabled.Value = leftTrackDisabled;
+            netRightTrackDisabled.Value = rightTrackDisabled;
+            netEngineDisabled.Value = engineDisabled;
+            netTurretDisabled.Value = turretDisabled;
+            netGunDisabled.Value = gunDisabled;
+        }
+        else
+        {
+            destroyed = netDestroyed.Value;
+            leftTrackDisabled = netLeftTrackDisabled.Value;
+            rightTrackDisabled = netRightTrackDisabled.Value;
+            engineDisabled = netEngineDisabled.Value;
+            turretDisabled = netTurretDisabled.Value;
+            gunDisabled = netGunDisabled.Value;
+
+            UpdateDamageColors();
+        }
+    }
+public void ApplyHit(Component part, TankGunner.AmmoType ammo)
+    {   
+        if (!IsServer)
+            return;
+
         if (destroyed) return;
+
 
         // For this prototype, either round destroys a lightly armored APC.
         if (vehicleType == VehicleType.APC)
@@ -97,11 +136,29 @@ public class TankDamageSystem : MonoBehaviour
         StartCoroutine(RemoveWreck());
     }
 
+    
     IEnumerator RemoveWreck()
     {
         yield return new WaitForSeconds(despawnDelay);
-        Destroy(gameObject);
+
+        if (!IsServer)
+            yield break;
+
+        NetworkObject networkObject =
+            GetComponent<NetworkObject>();
+
+        if (networkObject != null && networkObject.IsSpawned)
+        {
+            networkObject.Despawn(true);
+        }
+        else
+        {
+            Debug.LogWarning(
+                "Enemy tank is not network-spawned."
+            );
+        }
     }
+
 
     void UpdateDamageColors()
     {
@@ -133,4 +190,5 @@ public class TankDamageSystem : MonoBehaviour
             }
         }
     }
+
 }

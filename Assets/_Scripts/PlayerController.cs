@@ -37,36 +37,44 @@ public class PlayerController : NetworkBehaviour
     }
 
     
+
 private void HandlePickUpPressed()
 {
-    if (isOperatingTank)
-    return;
-    
     if (!IsOwner || isOperatingTank)
         return;
 
     if (m_isInteracting || m_isChopping)
         return;
 
-    // Check whether the player is near the Abrams.
-    TankCrewManager tank = FindAnyObjectByType<TankCrewManager>();
+    TankCrewManager tank =
+        FindAnyObjectByType<TankCrewManager>();
 
-    if (tank != null && tank.GunnerSeatAvailable &&
-        Vector3.Distance(transform.position,
-                         tank.transform.position) < 5f)
+    if (tank != null &&
+        Vector3.Distance(
+            transform.position,
+            tank.transform.position) < 5f)
     {
-        tank.RequestGunnerSeatRpc();
-        Debug.Log("Requested Abrams gunner seat!");
-        return;
+        if (tank.GunnerSeatAvailable)
+        {
+            tank.RequestGunnerSeatRpc();
+            return;
+        }
+
+        if (tank.CommanderSeatAvailable)
+        {
+            tank.RequestCommanderSeatRpc();
+            return;
+        }
     }
 
-    // Keep the tutorial's normal pickup behavior.
+    // Preserve normal tutorial pickup behavior.
     if (m_interactionDetector.ClosestInteractable == null)
         return;
 
     m_animator.SetBool("Interact", true);
     m_isInteracting = true;
 }
+
 
 
     private void OnDisable()
@@ -77,6 +85,8 @@ private void HandlePickUpPressed()
 
     private void HandleActionPressed()
     {
+        if (!IsOwner || isOperatingTank)
+        return;
         if(IsOwner == false)
         {
             return;
