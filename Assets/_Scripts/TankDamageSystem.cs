@@ -98,6 +98,12 @@ public void ApplyHit(Component part, TankGunner.AmmoType ammo)
                 engineDisabled = true;
                 break;
             case Component.Turret:
+                if (ammo == TankGunner.AmmoType.SABOT)
+                {
+                    DestroyVehicle();
+                    return;
+                }
+
                 turretDisabled = true;
                 break;
             case Component.MainGun:

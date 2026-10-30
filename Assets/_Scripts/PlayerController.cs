@@ -46,8 +46,23 @@ private void HandlePickUpPressed()
     if (m_isInteracting || m_isChopping)
         return;
 
-    TankCrewManager tank =
-        FindAnyObjectByType<TankCrewManager>();
+    TankCrewManager tank = null;
+    float closestDistance = 5f;
+
+    foreach (TankCrewManager candidate in
+            FindObjectsByType<TankCrewManager>(FindObjectsSortMode.None))
+    {
+    float distance = Vector3.Distance(
+        transform.position,
+        candidate.transform.position
+    );
+
+    if (distance < closestDistance)
+    {
+        closestDistance = distance;
+        tank = candidate;
+    }
+}
 
     if (tank != null &&
         Vector3.Distance(

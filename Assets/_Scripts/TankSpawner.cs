@@ -1,5 +1,6 @@
 
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,21 +10,29 @@ public class TankSpawner : NetworkBehaviour
     public TankDamageSystem enemyTankPrefab;
     public Transform[] spawnPoints;
 
+    [Header("Enemy Settings")]
+    [Min(1)]
+    public int enemyTankCount = 3;
+
     [Min(0f)]
     public float nextSpawnDelay = 2f;
 
-    private TankDamageSystem activeTank;
-    private int lastSpawnIndex = -1;
+    private List<TankDamageSystem> activeTanks =
+        new List<TankDamageSystem>();
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
+        if (!IsServer)
+            return;
+
+        for (int i = 0; i < enemyTankCount; i++)
+        {
             SpawnTank();
+        }
     }
 
-    void SpawnTank()
+    private void SpawnTank()
     {
-        // Only the server can create enemy tanks.
         if (!IsServer)
             return;
 
@@ -32,76 +41,61 @@ public class TankSpawner : NetworkBehaviour
             spawnPoints.Length == 0)
         {
             Debug.LogWarning(
-                "TankSpawner: Assign an enemy prefab and spawn points."
-            );
+                "TankSpawner: Assign enemy prefab and spawn points.");
             return;
         }
 
-        int index = Random.Range(0, spawnPoints.Length);
-
-        // Avoid repeating the same spawn point.
-        if (spawnPoints.Length > 1 && index == lastSpawnIndex)
-            index = (index + 1) % spawnPoints.Length;
-
-        Transform point = spawnPoints[index];
+        // Choose a random spawn point.
+        Transform point =
+            spawnPoints[Random.Range(0, spawnPoints.Length)];
 
         if (point == null)
-        {
-            Debug.LogWarning("TankSpawner: Missing spawn point.");
             return;
-        }
 
-        lastSpawnIndex = index;
-
-        activeTank = Instantiate(
+        TankDamageSystem tank = Instantiate(
             enemyTankPrefab,
             point.position,
             point.rotation
         );
 
         NetworkObject networkObject =
-            activeTank.GetComponent<NetworkObject>();
+            tank.GetComponent<NetworkObject>();
 
         if (networkObject == null)
         {
             Debug.LogError(
-                "Enemy tank prefab needs a NetworkObject!"
-            );
+                "Enemy tank prefab needs a NetworkObject!");
 
-            Destroy(activeTank.gameObject);
-            activeTank = null;
+            Destroy(tank.gameObject);
             return;
         }
 
         networkObject.Spawn();
 
-        activeTank.OnDestroyed += HandleDestroyed;
+        activeTanks.Add(tank);
+        tank.OnDestroyed += HandleDestroyed;
 
-        Debug.Log("NETWORK ENEMY TANK SPAWNED");
+        Debug.Log(
+            $"Enemy spawned. Active tanks: {activeTanks.Count}");
     }
 
-    void HandleDestroyed(TankDamageSystem tank)
+    private void HandleDestroyed(TankDamageSystem tank)
     {
         if (!IsServer)
             return;
 
         tank.OnDestroyed -= HandleDestroyed;
+        activeTanks.Remove(tank);
 
-        if (tank == activeTank)
-            activeTank = null;
-
-        StartCoroutine(
-            SpawnAfterDelay(
-                tank.despawnDelay + nextSpawnDelay
-            )
-        );
+        StartCoroutine(SpawnAfterDelay(
+            tank.despawnDelay + nextSpawnDelay));
     }
 
-    IEnumerator SpawnAfterDelay(float delay)
+    private IEnumerator SpawnAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        if (IsServer)
+        if (IsServer && IsSpawned)
             SpawnTank();
     }
 }

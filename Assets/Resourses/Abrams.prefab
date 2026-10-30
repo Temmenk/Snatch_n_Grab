@@ -353,6 +353,7 @@ GameObject:
   - component: {fileID: 8045005298217424936}
   - component: {fileID: 4602273751462797790}
   - component: {fileID: 1973318882808280659}
+  - component: {fileID: 8587733645500970796}
   m_Layer: 0
   m_Name: Abrams
   m_TagString: Untagged
@@ -415,11 +416,11 @@ MonoBehaviour:
   sightPivot: {fileID: 1438183307723388761}
   citvCamera: {fileID: 1327047568809001176}
   tankTurret: {fileID: 3411853869856799507}
-  traverseSpeed: 65
-  elevationSpeed: 40
+  mouseSensitivity: 0.5
   minPitch: -20
   maxPitch: 45
   designationRange: 4000
+  enableDesignation: 0
   controlsEnabled: 0
 --- !u!114 &5527447007544563426
 MonoBehaviour:
@@ -568,6 +569,21 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+--- !u!114 &8587733645500970796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3694544374777939498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac264dc45ef75746b56373eae0811a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CommanderCITVNetwork
+  ShowTopMostFoldoutHeaderGroup: 1
+  crew: {fileID: 8045005298217424936}
+  commander: {fileID: 3292453635538156673}
 --- !u!1 &4084667638060115113
 GameObject:
   m_ObjectHideFlags: 0
