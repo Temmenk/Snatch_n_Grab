@@ -128,7 +128,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 4000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -265,7 +265,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 4000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -396,8 +396,8 @@ MonoBehaviour:
   turret: {fileID: 1984131208464604649}
   gun: {fileID: 1004142891206712630}
   gunnerSightPivot: {fileID: 5986562264590887001}
-  traverseSpeed: 60
-  elevationSpeed: 25
+  traverseSpeed: 8
+  elevationSpeed: 5
   minElevation: -10
   maxElevation: 20
   laseSightKick: 0.02
@@ -416,7 +416,7 @@ MonoBehaviour:
   sightPivot: {fileID: 1438183307723388761}
   citvCamera: {fileID: 1327047568809001176}
   tankTurret: {fileID: 3411853869856799507}
-  mouseSensitivity: 0.5
+  mouseSensitivity: 0.32
   minPitch: -20
   maxPitch: 45
   designationRange: 4000
