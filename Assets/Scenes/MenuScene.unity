@@ -685,6 +685,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SessionManager
   joinCodeInput: {fileID: 1345450265}
+  startGameButton: {fileID: 1460041615}
+  gameSceneName: GameScene
 --- !u!4 &338812314
 Transform:
   m_ObjectHideFlags: 0
@@ -1663,7 +1665,6 @@ RectTransform:
   - {fileID: 308236034}
   - {fileID: 1603337415}
   - {fileID: 353735205}
-  - {fileID: 1460041614}
   m_Father: {fileID: 815778511}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2842,7 +2843,6 @@ GameObject:
   - component: {fileID: 1075160396}
   - component: {fileID: 1075160395}
   - component: {fileID: 1075160394}
-  - component: {fileID: 1075160397}
   m_Layer: 5
   m_Name: Canvas_PlayerInput
   m_TagString: Untagged
@@ -2867,6 +2867,7 @@ RectTransform:
   - {fileID: 2134362577}
   - {fileID: 1345450264}
   - {fileID: 953640295}
+  - {fileID: 1460041614}
   m_Father: {fileID: 815778511}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2937,19 +2938,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1075160397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1075160392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5c69b39fa094b6cbaaf584e8df0a1ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SessionManager
-  joinCodeInput: {fileID: 0}
 --- !u!1 &1105239240
 GameObject:
   m_ObjectHideFlags: 0
@@ -3156,7 +3144,8 @@ MonoBehaviour:
     NetworkTransport: {fileID: 1119784858}
     PlayerPrefab: {fileID: 0}
     Prefabs:
-      NetworkPrefabsLists: []
+      NetworkPrefabsLists:
+      - {fileID: 11400000, guid: 358b08ad235c3fc4cbe137d993d2d6c4, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -3808,11 +3797,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1672063889}
-  m_Father: {fileID: 727870429}
+  m_Father: {fileID: 1075160393}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -149, y: -338}
+  m_AnchoredPosition: {x: 0, y: -185}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1460041615
@@ -3854,11 +3843,23 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1460041616}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 338812313}
+        m_TargetAssemblyTypeName: SessionManager, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1460041616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4550,9 +4551,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Back
-
-'
+  m_text: Start Game
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
