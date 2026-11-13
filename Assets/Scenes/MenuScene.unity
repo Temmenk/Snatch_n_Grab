@@ -2911,7 +2911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Transports.UTP.UnityTransport
   m_ProtocolType: 0
-  m_UseWebSockets: 0
+  m_UseWebSockets: 1
   m_UseEncryption: 0
   m_MaxPacketQueueSize: 128
   m_MaxPayloadSize: 6144
@@ -3421,7 +3421,23 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1460041616}
   m_OnClick:
     m_PersistentCalls:
+<<<<<<< Updated upstream
       m_Calls: []
+=======
+      m_Calls:
+      - m_Target: {fileID: 338812313}
+        m_TargetAssemblyTypeName: SessionManager, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+>>>>>>> Stashed changes
 --- !u!114 &1460041616
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,12 +16,12 @@ public class GameManager : NetworkBehaviour
 
     private void Start()
     {
-        if (m_multiplayerUI != null)
-        {
-            m_multiplayerUI.OnStartHost += StartHost;
-            m_multiplayerUI.OnStartClient += StartClient;
-            m_multiplayerUI.OnDiconnectClient += DisconnectClient;
-        }
+        //if (m_multiplayerUI != null)
+        //{
+        //    m_multiplayerUI.OnStartHost += StartHost;
+        //    m_multiplayerUI.OnStartClient += StartClient;
+        //    m_multiplayerUI.OnDiconnectClient += DisconnectClient;
+        //}
     }
 
     public override void OnNetworkSpawn()
@@ -83,12 +83,13 @@ public class GameManager : NetworkBehaviour
         base.OnNetworkDespawn();
     }
 
-    private void DisconnectClient()
-    {
-        m_multiplayerUI.EnableButtons();
-        NetworkManager.Shutdown();
-    }
+    //private void DisconnectClient()
+    //{
+    //    m_multiplayerUI.EnableButtons();
+    //    NetworkManager.Shutdown();
+    //}
 
+<<<<<<< Updated upstream
     private void StartClient()
     {
         m_multiplayerUI.DisableButtons();
@@ -101,3 +102,23 @@ public class GameManager : NetworkBehaviour
         NetworkManager.StartHost();
     }
 }
+=======
+    //private void StartClient()
+    //{
+    //    if (NetworkManager.IsListening)
+    //        return;
+
+    //    m_multiplayerUI.DisableButtons();
+    //    NetworkManager.StartClient();
+    //}
+
+    //private void StartHost()
+    //{
+    //    if (NetworkManager.IsListening)
+    //        return;
+
+    //    m_multiplayerUI.DisableButtons();
+    //    NetworkManager.StartHost();
+    //}
+}
+>>>>>>> Stashed changes
