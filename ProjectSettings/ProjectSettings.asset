@@ -934,10 +934,17 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
+<<<<<<< Updated upstream
   cloudProjectId: 5b3535b5-37ef-4ca1-9507-0c72319fb982
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Snatch 'n Grab
+=======
+  cloudProjectId: 329eed4d-d8df-4159-9b13-dd7c250ed283
+  framebufferDepthMemorylessMode: 0
+  qualitySettingsNames: []
+  projectName: Snatch 'n Grab (2)
+>>>>>>> Stashed changes
   organizationId: temmenk
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
